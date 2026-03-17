@@ -26,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final EmployeeService employeeService;
 
     public EmployeeResponse register(RegisterRequest request) {
         if (employeeRepository.existsByEmail(request.getEmail())) {
@@ -48,7 +49,7 @@ public class AuthService {
                 .build();
 
         Employee saved = employeeRepository.save(employee);
-        return toEmployeeResponse(saved);
+        return employeeService.toEmployeeResponse(saved);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -66,19 +67,6 @@ public class AuthService {
                 .tokenType("Bearer")
                 .email(employee.getEmail())
                 .role(employee.getRole())
-                .build();
-    }
-
-    private EmployeeResponse toEmployeeResponse(Employee employee) {
-        return EmployeeResponse.builder()
-                .id(employee.getId())
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
-                .email(employee.getEmail())
-                .role(employee.getRole())
-                .departmentId(employee.getDepartment() != null ? employee.getDepartment().getId() : null)
-                .departmentName(employee.getDepartment() != null ? employee.getDepartment().getName() : null)
-                .createdAt(employee.getCreatedAt())
                 .build();
     }
 }

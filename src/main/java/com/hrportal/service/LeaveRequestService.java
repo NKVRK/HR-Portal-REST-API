@@ -71,6 +71,9 @@ public class LeaveRequestService {
         if (leaveRequest.getStatus() != LeaveStatus.PENDING) {
             throw new IllegalArgumentException("Only PENDING leave requests can be approved");
         }
+        if (leaveRequest.getEmployee().getId().equals(reviewer.getId())) {
+            throw new IllegalArgumentException("Employees cannot approve their own leave requests");
+        }
 
         leaveRequest.setStatus(LeaveStatus.APPROVED);
         leaveRequest.setReviewedBy(reviewer);
@@ -86,6 +89,9 @@ public class LeaveRequestService {
 
         if (leaveRequest.getStatus() != LeaveStatus.PENDING) {
             throw new IllegalArgumentException("Only PENDING leave requests can be rejected");
+        }
+        if (leaveRequest.getEmployee().getId().equals(reviewer.getId())) {
+            throw new IllegalArgumentException("Employees cannot reject their own leave requests");
         }
 
         leaveRequest.setStatus(LeaveStatus.REJECTED);

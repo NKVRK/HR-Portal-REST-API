@@ -21,6 +21,7 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
     public DepartmentResponse createDepartment(DepartmentRequest request) {
         if (departmentRepository.existsByName(request.getName())) {
@@ -76,16 +77,7 @@ public class DepartmentService {
         employee.setDepartment(department);
         Employee saved = employeeRepository.save(employee);
 
-        return EmployeeResponse.builder()
-                .id(saved.getId())
-                .firstName(saved.getFirstName())
-                .lastName(saved.getLastName())
-                .email(saved.getEmail())
-                .role(saved.getRole())
-                .departmentId(saved.getDepartment().getId())
-                .departmentName(saved.getDepartment().getName())
-                .createdAt(saved.getCreatedAt())
-                .build();
+        return employeeService.toEmployeeResponse(saved);
     }
 
     private DepartmentResponse toDepartmentResponse(Department department) {
